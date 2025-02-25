@@ -39,12 +39,17 @@ void    cleanUp(void){
 	vkDestroyInstance(vData.instance, NULL);
     glfwDestroyWindow(scop.window);
     glfwTerminate();
+
+	freeVulkanDevices();
 }
 
 int main(void) {
     atexit(cleanUp);
-    if (init())
-    	return 1;
+    if (init()){
+		perror("Failed to Init Resouces !\n");
+		return 1;
+	}
+
 	if (renderLoop())
 		return 2;
     return 0;
