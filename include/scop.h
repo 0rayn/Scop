@@ -27,3 +27,4 @@ typedef struct vulkanData
 
 uint8_t initVulkan(void);
 void	freeVulkanDevices(void);
+uint8_t	pickPhysicalDevice(void);

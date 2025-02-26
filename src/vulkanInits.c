@@ -26,45 +26,6 @@ void	createVulkanAppInfo(void){
 	vData.createInfo.enabledLayerCount = 0;
 }
 
-bool isDeviceSuitable(VkPhysicalDevice *dev){
-	(void)dev;
-	return true;
-}
-
-void	freeVulkanDevices(void){
-	for (uint32_t i = 0; i < vData.devicesCount; i++)
-		free(vData.devices[i]);
-}
-
-uint8_t	pickPhysicalDevice(void){
-
-	vData.selectedDevice = VK_NULL_HANDLE;
-	vkEnumeratePhysicalDevices(vData.instance, &vData.devicesCount, NULL);
-	if (!vData.devicesCount){
-		perror("Failed to find GPUs with Vulkan Support\n");
-		return 1;
-	}
-	
-	vData.devices = malloc(sizeof(VkPhysicalDevice) * vData.devicesCount);
-	if (!vData.devices){
-		perror("Allocation Failed !\n");
-		return 2;
-	}
-	vkEnumeratePhysicalDevices(vData.instance, &vData.devicesCount, vData.devices);
-
-	for (size_t i = 0; i < vData.devicesCount; i++){
-		if (isDeviceSuitable(&vData.devices[i])){
-			vData.selectedDevice = &vData.devices[i];
-			break;
-		}
-	}
-	if (vData.selectedDevice == VK_NULL_HANDLE){
-		perror("Couldn't find a suitable Device for the current Requirements !\n");
-		return 3;
-	}
-	return 0;
-}
-
 uint8_t initVulkan(void){
 	setVulkanAppInfo();
 	createVulkanAppInfo();
@@ -74,6 +35,7 @@ uint8_t initVulkan(void){
 		return 1;
 	}
 
-	pickPhysicalDevice();
+	if (pickPhysicalDevice())
+		return 2;
     return 0;
 }
